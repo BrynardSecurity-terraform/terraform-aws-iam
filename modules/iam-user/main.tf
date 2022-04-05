@@ -38,3 +38,20 @@ resource "aws_iam_user_ssh_key" "this" {
   encoding   = var.ssh_key_encoding
   public_key = var.ssh_public_key
 }
+
+resource "aws_iam_policy" "custom" {
+  count = length(var.custom_iam_policies)
+
+  name        = var.custom_iam_policies[count.index]["name"]
+  policy      = var.custom_iam_policies[count.index]["policy"]
+  description = lookup(var.custom_iam_policies[count.index], "description", null)
+
+  tags = var.tags
+}
+
+resource "aws_iam_user_policy_attachment" "custom" {
+  count = length(var.custom_iam_policies)
+
+  user = aws_iam_user.this.iam_user_name
+  policy_arn = element(aws_iam_policy.custom.*.arn, count.index)
+}
