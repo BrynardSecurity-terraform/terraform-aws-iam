@@ -1,3 +1,7 @@
+locals {
+  user_name = element(concat(aws_iam_user.this.*.id, [var.name]), 0)
+}
+
 resource "aws_iam_user" "this" {
   count = var.create_user ? 1 : 0
 
@@ -52,6 +56,6 @@ resource "aws_iam_policy" "custom" {
 resource "aws_iam_user_policy_attachment" "custom" {
   count = length(var.custom_iam_policies)
 
-  user = aws_iam_user.this.iam_user_name
+  user = local.user_name
   policy_arn = element(aws_iam_policy.custom.*.arn, count.index)
 }
