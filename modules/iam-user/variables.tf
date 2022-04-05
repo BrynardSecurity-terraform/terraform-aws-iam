@@ -16,6 +16,18 @@ variable "create_iam_access_key" {
   default     = true
 }
 
+variable "custom_iam_policy_arns" {
+  description = "List of IAM policies ARNs to attach to IAM user"
+  type        = list(string)
+  default     = []
+}
+
+variable "custom_iam_policies" {
+  description = "List of maps of inline IAM policies to attach to IAM user. Should have `name` and `policy` keys in each element."
+  type        = list(map(string))
+  default     = []
+}
+
 variable "name" {
   description = "Desired name for the IAM user"
   type        = string
